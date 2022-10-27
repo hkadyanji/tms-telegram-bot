@@ -1,6 +1,7 @@
 import { Context, helpers } from 'https://deno.land/x/oak/mod.ts';
 import { Router } from 'https://deno.land/x/oak/mod.ts';
 import puppeteer from "https://deno.land/x/puppeteer@14.1.1/mod.ts";
+import PQueue from "https://deno.land/x/p_queue@1.0.1/mod.ts"
 
 import { handleSuccess } from '../helpers/request.ts';
 
@@ -65,35 +66,13 @@ const getMessage = async (msg: string): Promise<string> => {
   return await getFines(plateNumber[0]);
 }
 
-const handlePlate = async ({
-  phone_number_id,
-  from,
-  msg_body,
-  name,
-}) => {
-  const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=${WHATSAPP_TOKEN}`;
-  
-  const msg = await getMessage(msg_body);
-  const data = {
-    messaging_product: 'whatsapp',
-    to: from,
-    text: {
-      body: `Hello, ${name}, ${msg}.`,
-    },
-  };
-
-  await fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'Content-Type': 'application/json'
-    },
-  });
-}
-
 const handleIncoming = async (ctx: Context) => {
   const body = await ctx.request.body().value;
   const value = body.entry[0].changes[0].value;
+
+  const queue = new PQueue({
+    concurrency: 1,
+  });
 
   if (!value.messages || !value.contacts) {
     ctx.response.status = 200;
@@ -105,14 +84,27 @@ const handleIncoming = async (ctx: Context) => {
   const from = value.messages[0].from;
   const msg_body = value.messages[0].text.body;
 
-  /*
-  handlePlate({
-    phone_number_id,
-    name,
-    from,
-    msg_body,
-  });
-  */
+  queue.add(async () => {
+    const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=${WHATSAPP_TOKEN}`;
+
+    const msg = await getMessage(msg_body);
+    const data = {
+      messaging_product: 'whatsapp',
+      to: from,
+      text: {
+        body: `Hello, ${name}, ${msg}.`,
+      },
+    };
+
+    await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+  })
+
   ctx.response.status = 200;
 }
 
