@@ -18,9 +18,16 @@ const handleWebHook = async (ctx: Context) => {
   ctx.response.status = 200;
 }
 
+const handleIncoming = async (ctx: Context) => {
+  const body = await ctx.request.body().value;
+  console.log(body);
+  ctx.response.status = 200;
+}
+
 const router = new Router();
 router
   .get('/', getVehicle)
-  .get('callback', handleWebHook)
+  .get('webhook', handleWebHook)
+  .post('webhook', handleIncoming)
 
 export default router;
