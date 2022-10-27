@@ -94,10 +94,10 @@ const handleIncoming = async (ctx: Context) => {
       });
       console.log('resp ', JSON.stringify(resp));
     } catch(e) {
-      console.log('err ', JSON.stringify(e));
+      console.log('err ', e);
     }
   } catch (error) {
-    console.log('e2 ', JSON.stringify(error));
+    console.log('e2 ', error);
   }
 
   ctx.response.status = 200;
