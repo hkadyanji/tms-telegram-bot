@@ -30,6 +30,7 @@ const getFines = async (plateNum: string) => {
   const values = JSON.parse(JSON.stringify(result))[1];
   
   if (values.length < 2) {
+    console.log('D');
     return values[0];
   }
 
@@ -62,19 +63,24 @@ const getMessage = async (msg: string): Promise<string> => {
     return 'please enter valid plate number example: T123AAA';
   }
 
+  console.log('C');
   return await getFines(plateNumber[0]);
 }
 
 const handleIncoming = async (ctx: Context) => {
   const body = await ctx.request.body().value;
   const value = body.entry[0].changes[0].value;
+  console.log('A');
 
   const phone_number_id = value.metadata.phone_number_id;
   const name = value.contacts[0].profile.name;
   const from = value.messages[0].from;
   const msg_body = value.messages[0].text.body;
+  console.log('B');
 
   const msg = await getMessage(msg_body);
+
+  console.log(JSON.stringify(body));
 
   const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=${WHATSAPP_TOKEN}`;
   const data = {
@@ -85,7 +91,7 @@ const handleIncoming = async (ctx: Context) => {
     },
   };
 
-  console.log(JSON.stringify(data), msg);
+  console.log(JSON.stringify(data));
 
   await fetch(url, {
     method: 'POST',
