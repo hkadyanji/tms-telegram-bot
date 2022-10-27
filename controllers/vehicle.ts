@@ -1,10 +1,38 @@
 import { Context, helpers } from 'https://deno.land/x/oak/mod.ts';
 import { Router } from 'https://deno.land/x/oak/mod.ts';
+import puppeteer from "https://deno.land/x/puppeteer@14.1.1/mod.ts";
 
 import { handleSuccess } from '../helpers/request.ts';
 
 const WHATSAPP_TOKEN = Deno.env.get('WHATSAPP_TOKEN');
 const WHATSAPP_VERIFY_TOKEN = Deno.env.get('WHATSAPP_VERIFY_TOKEN');
+const BROWSERLESS_TOKEN = Deno.env.get('BROWSERLESS_TOKEN');
+
+const getFines = async (plateNum: string) => {
+  const browser = await puppeteer.connect({
+    browserWSEndpoint: `wss://chrome.browserless.io?token=${BROWSERLESS_TOKEN}`
+  });
+
+  const page = await browser.newPage();
+  await page.goto('https://tms.tpf.go.tz/');
+  await page.type('input[name="vehicle"]', plateNum);
+  await page.click('input[type="submit"]');
+  await page.waitForNetworkIdle();
+
+  const result = await page.$$eval<string[][]>('table tr', (rows) => {
+    return Array.from(rows).map((row: any) => {
+      const header = row.querySelectorAll('th');
+      const columns = header.length > 0 ? header : row.querySelectorAll('td');
+      return Array.from(columns).map((column: any) => column.textContent);
+    });
+  });
+
+  const values = JSON.parse(JSON.stringify(result))[1];
+  console.log('zz ', values);
+  await browser.close();
+
+  return `The car ${values[3]} has a fine of Tsh. ${values[7]} and penalty of Tsh. ${values[8]} bringing the total to ${values[9]}. The offence was "${values[6]}, which took place at ${values[5]} on the date ${values[1]}"`;
+}
 
 const getVehicle = async (ctx: Context) => {
   const params = helpers.getQuery(ctx, { mergeParams: true });
@@ -35,12 +63,14 @@ const handleIncoming = async (ctx: Context) => {
   const from = value.messages[0].from;
   const msg_body = value.messages[0].text.body;
 
+  const msg = await getFines(msg_body);
+
   const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=${WHATSAPP_TOKEN}`;
   const data = {
     messaging_product: 'whatsapp',
     to: from,
     text: {
-      body: `Hi, ${name}, your car ${msg_body} has no outstanding fines.`,
+      body: `Hello, ${name}, ${msg}.`,
     },
   };
 
