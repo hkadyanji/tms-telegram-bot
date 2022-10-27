@@ -10,7 +10,10 @@ const app = new Application();
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.addEventListener('error', (evt) => console.log(`Caught error: ${evt.error}`));
+app.addEventListener('error', (evt) => {
+  evt.preventDefault();
+  console.log(`Caught error: ${evt.error}`)
+});
 
 app.addEventListener('listen', ({ hostname, port, secure }) => {
   console.log(
