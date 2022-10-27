@@ -12,7 +12,7 @@ app.use(router.allowedMethods());
 
 app.addEventListener('error', (evt) => {
   evt.preventDefault();
-  console.log(`Caught error: ${evt.error}`)
+  console.log(`Caught error: ${evt.error?.message}`)
 });
 
 app.addEventListener('listen', ({ hostname, port, secure }) => {
