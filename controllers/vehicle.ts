@@ -20,7 +20,7 @@ const handleWebHook = async (ctx: Context) => {
 
 const handleIncoming = async (ctx: Context) => {
   const body = await ctx.request.body().value;
-  console.log(body);
+  console.log(JSON.stringify(body));
   ctx.response.status = 200;
 }
 
