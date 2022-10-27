@@ -65,26 +65,15 @@ const getMessage = async (msg: string): Promise<string> => {
   return await getFines(plateNumber[0]);
 }
 
-const handleIncoming = async (ctx: Context) => {
-  const body = await ctx.request.body().value;
-  const value = body.entry[0].changes[0].value;
-
-  if (!value.messages || !value.contacts) {
-    ctx.response.status = 200;
-    return;
-  }
-
-  ctx.response.status = 200;
-
-  const phone_number_id = value.metadata.phone_number_id;
-  const name = value.contacts[0].profile.name;
-  const from = value.messages[0].from;
-  const msg_body = value.messages[0].text.body;
-
+const handlePlate = async ({
+  phone_number_id,
+  from,
+  msg_body,
+  name,
+}) => {
   const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=${WHATSAPP_TOKEN}`;
   
   const msg = await getMessage(msg_body);
-
   const data = {
     messaging_product: 'whatsapp',
     to: from,
@@ -100,6 +89,30 @@ const handleIncoming = async (ctx: Context) => {
       'Content-Type': 'application/json'
     },
   });
+}
+
+const handleIncoming = async (ctx: Context) => {
+  const body = await ctx.request.body().value;
+  const value = body.entry[0].changes[0].value;
+
+  if (!value.messages || !value.contacts) {
+    ctx.response.status = 200;
+    return;
+  }
+
+  const phone_number_id = value.metadata.phone_number_id;
+  const name = value.contacts[0].profile.name;
+  const from = value.messages[0].from;
+  const msg_body = value.messages[0].text.body;
+
+  handlePlate({
+    phone_number_id,
+    name,
+    from,
+    msg_body,
+  });
+
+  ctx.response.status = 200;
 }
 
 const router = new Router();
