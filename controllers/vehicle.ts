@@ -14,7 +14,8 @@ const handleWebHook = async (ctx: Context) => {
   const params = helpers.getQuery(ctx, { mergeParams: true });
   const id: string = params?.id;
 
-  handleSuccess(ctx, { value: 'callback route' });
+  ctx.response.body = '1422992907';
+  ctx.response.status = 200;
 }
 
 const router = new Router();
