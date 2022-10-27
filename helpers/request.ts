@@ -16,5 +16,4 @@ export const handleError = async (ctx: Context, status?: number, message?: strin
   };
 
   ctx.response.status = status || 400;
-  console.log(message);
 }

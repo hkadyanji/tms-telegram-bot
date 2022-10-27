@@ -1,7 +1,10 @@
 import { Context, helpers } from 'https://deno.land/x/oak/mod.ts';
 import { Router } from 'https://deno.land/x/oak/mod.ts';
+import { config } from 'https://deno.land/x/dotenv/mod.ts';
 
 import { handleSuccess } from '../helpers/request.ts';
+
+const { WHATSAPP_TOKEN, WHATSAPP_VERIFY_TOKEN } = config();
 
 const getVehicle = async (ctx: Context) => {
   const params = helpers.getQuery(ctx, { mergeParams: true });
@@ -14,13 +17,18 @@ const handleWebHook = async (ctx: Context) => {
   const params = helpers.getQuery(ctx, { mergeParams: true });
   const challenge: string = params['hub.challenge'];
 
+  if (WHATSAPP_VERIFY_TOKEN !== params['hub.verify_token']) {
+    ctx.response.status = 403;
+    return;
+  }
+
   ctx.response.body = challenge;
   ctx.response.status = 200;
 }
 
 const handleIncoming = async (ctx: Context) => {
   const body = await ctx.request.body().value;
-  const { value } = body.entry[0].changes[0].value;
+  const { value } = body.entry[0].changes[0];
   console.log(JSON.stringify(body));
 
   const phone_number_id = value.metadata.phone_number_id;
@@ -28,7 +36,7 @@ const handleIncoming = async (ctx: Context) => {
   const from = value.messages[0].from;
   const msg_body = value.messages[0].text.body;
 
-  const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=token`;
+  const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=${WHATSAPP_TOKEN}`;
   const data = {
     messaging_product: 'whatsapp',
     to: from,

@@ -1,5 +1,6 @@
 import * as flags from 'https://deno.land/std/flags/mod.ts';
+import { config } from 'https://deno.land/x/dotenv/mod.ts';
 
-const envPort = flags.parse(Deno.args).port;
+const env = config();
 
-export const DEFAULT_PORT = envPort ? Number(envPort) : 3100;
+export const PORT = flags.parse(Deno.args).port ?? Number(env.PORT);
