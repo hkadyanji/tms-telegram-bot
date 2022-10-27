@@ -28,8 +28,8 @@ const handleWebHook = async (ctx: Context) => {
 
 const handleIncoming = async (ctx: Context) => {
   const body = await ctx.request.body().value;
-  const { value } = body.entry[0].changes[0];
-  console.log(JSON.stringify(body));
+  const value = body.entry[0].changes[0].value;
+  console.log(JSON.stringify(value));
 
   const phone_number_id = value.metadata.phone_number_id;
   const name = value.contacts[0].profile.name;
