@@ -105,13 +105,14 @@ const handleIncoming = async (ctx: Context) => {
   const from = value.messages[0].from;
   const msg_body = value.messages[0].text.body;
 
+  /*
   handlePlate({
     phone_number_id,
     name,
     from,
     msg_body,
   });
-
+  */
   ctx.response.status = 200;
 }
 
