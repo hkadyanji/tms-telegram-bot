@@ -20,7 +20,27 @@ const handleWebHook = async (ctx: Context) => {
 
 const handleIncoming = async (ctx: Context) => {
   const body = await ctx.request.body().value;
+  const { value } = body.entry[0].changes[0].value;
   console.log(JSON.stringify(body));
+
+  const phone_number_id = value.metadata.phone_number_id;
+  const name = value.contacts[0].profile.name;
+  const from = value.messages[0].from;
+  const msg_body = value.messages[0].text.body;
+
+  const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=token`;
+  const data = {
+    messaging_product: 'whatsapp',
+    to: from,
+    text: {
+      body: `Hi, ${name}, your car ${msg_body} has no outstanding fines.`,
+    },
+  };
+
+  await fetch(url, {
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json' },
+  });
   ctx.response.status = 200;
 }
 
