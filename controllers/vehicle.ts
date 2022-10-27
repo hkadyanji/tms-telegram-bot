@@ -73,8 +73,8 @@ const handleIncoming = async (ctx: Context) => {
   try {
     const value = body.entry[0].changes[0].value;
 
-    console.log('pot ', JSON.stringify(value.contacts))
-    console.log('from ', JSON.stringify(value.messages))
+    console.log('pot ', JSON.stringify(value))
+    console.log('from ', JSON.stringify(body))
 
     const phone_number_id = value.metadata.phone_number_id;
     const name = value.contacts[0].profile.name;
