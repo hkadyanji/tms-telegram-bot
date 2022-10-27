@@ -81,7 +81,7 @@ const handleIncoming = async (ctx: Context) => {
 
   const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=${WHATSAPP_TOKEN}`;
   
-  const msg = msg_body; // await getMessage(msg_body);
+  const msg = await getMessage(msg_body);
 
   const data = {
     messaging_product: 'whatsapp',
