@@ -12,11 +12,9 @@ const getVehicle = async (ctx: Context) => {
 
 const handleWebHook = async (ctx: Context) => {
   const params = helpers.getQuery(ctx, { mergeParams: true });
-  const id: string = params?.id;
+  const challenge: string = params['hub.challenge'];
 
-  console.log('params ', params);
-
-  ctx.response.body = '1422992907';
+  ctx.response.body = challenge;
   ctx.response.status = 200;
 }
 
