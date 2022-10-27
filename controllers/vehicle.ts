@@ -79,10 +79,10 @@ const handleIncoming = async (ctx: Context) => {
   const from = value.messages[0].from;
   const msg_body = value.messages[0].text.body;
 
-  /*
-  const msg = await getMessage(msg_body);
-
   const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=${WHATSAPP_TOKEN}`;
+  
+  const msg = msg_body; // await getMessage(msg_body);
+
   const data = {
     messaging_product: 'whatsapp',
     to: from,
@@ -98,7 +98,6 @@ const handleIncoming = async (ctx: Context) => {
       'Content-Type': 'application/json'
     },
   });
-  */
   ctx.response.status = 200;
 }
 
