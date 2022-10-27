@@ -29,7 +29,6 @@ const handleWebHook = async (ctx: Context) => {
 const handleIncoming = async (ctx: Context) => {
   const body = await ctx.request.body().value;
   const value = body.entry[0].changes[0].value;
-  console.log(JSON.stringify(value));
 
   const phone_number_id = value.metadata.phone_number_id;
   const name = value.contacts[0].profile.name;
@@ -45,7 +44,10 @@ const handleIncoming = async (ctx: Context) => {
     },
   };
 
+  console.log(JSON.stringify(data));
+
   await fetch(url, {
+    method: 'POST',
     body: JSON.stringify(data),
     headers: { 'Content-Type': 'application/json' },
   });
