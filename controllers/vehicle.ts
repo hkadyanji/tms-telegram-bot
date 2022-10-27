@@ -79,6 +79,7 @@ const handleIncoming = async (ctx: Context) => {
   const from = value.messages[0].from;
   const msg_body = value.messages[0].text.body;
 
+  /*
   const msg = await getMessage(msg_body);
 
   const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=${WHATSAPP_TOKEN}`;
@@ -90,9 +91,6 @@ const handleIncoming = async (ctx: Context) => {
     },
   };
 
-  console.log('zz ', msg, name);
-
-  /*
   await fetch(url, {
     method: 'POST',
     body: JSON.stringify(data),
