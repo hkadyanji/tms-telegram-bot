@@ -56,6 +56,15 @@ const handleWebHook = async (ctx: Context) => {
   ctx.response.status = 200;
 }
 
+const getMessage = async (msg: string): Promise<string> => {
+  const plateNumber: string[] = msg.match(/T\d{3}[a-zA-Z]{3}/);
+  if (plateNumber.length < 1) {
+    return 'please enter valid plate number example: T123AAA';
+  }
+
+  return await getFines(plateNumber[0]);
+}
+
 const handleIncoming = async (ctx: Context) => {
   const body = await ctx.request.body().value;
   const value = body.entry[0].changes[0].value;
@@ -65,7 +74,7 @@ const handleIncoming = async (ctx: Context) => {
   const from = value.messages[0].from;
   const msg_body = value.messages[0].text.body;
 
-  const msg = await getFines(msg_body);
+  const msg = await getMessage(msg_body);
 
   const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=${WHATSAPP_TOKEN}`;
   const data = {
