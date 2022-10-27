@@ -74,8 +74,6 @@ const handleIncoming = async (ctx: Context) => {
     return;
   }
 
-  console.log('zz ', JSON.stringify(value));
-
   const phone_number_id = value.metadata.phone_number_id;
   const name = value.contacts[0].profile.name;
   const from = value.messages[0].from;
@@ -92,6 +90,9 @@ const handleIncoming = async (ctx: Context) => {
     },
   };
 
+  console.log('zz ', msg, name);
+
+  /*
   await fetch(url, {
     method: 'POST',
     body: JSON.stringify(data),
@@ -99,7 +100,7 @@ const handleIncoming = async (ctx: Context) => {
       'Content-Type': 'application/json'
     },
   });
-
+  */
   ctx.response.status = 200;
 }
 
