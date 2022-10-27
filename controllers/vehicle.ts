@@ -1,10 +1,10 @@
 import { Context, helpers } from 'https://deno.land/x/oak/mod.ts';
 import { Router } from 'https://deno.land/x/oak/mod.ts';
-import { config } from 'https://deno.land/x/dotenv/mod.ts';
 
 import { handleSuccess } from '../helpers/request.ts';
 
-const { WHATSAPP_TOKEN, WHATSAPP_VERIFY_TOKEN } = config();
+const WHATSAPP_TOKEN = Deno.env.get('WHATSAPP_TOKEN');
+const WHATSAPP_VERIFY_TOKEN = Deno.env.get('WHATSAPP_VERIFY_TOKEN');
 
 const getVehicle = async (ctx: Context) => {
   const params = helpers.getQuery(ctx, { mergeParams: true });
