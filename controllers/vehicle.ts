@@ -62,6 +62,7 @@ const getMessage = async (msg: string): Promise<string> => {
     return 'please enter valid plate number example: T123AAA';
   }
 
+  console.log('z ', plateNumber);
   return await getFines(plateNumber[0]);
 }
 
