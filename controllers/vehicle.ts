@@ -28,9 +28,8 @@ const getFines = async (plateNum: string) => {
   });
   await browser.close();
   const values = JSON.parse(JSON.stringify(result))[1];
-  
+
   if (values.length < 2) {
-    console.log('D');
     return values[0];
   }
 
@@ -58,46 +57,44 @@ const handleWebHook = async (ctx: Context) => {
 }
 
 const getMessage = async (msg: string): Promise<string> => {
-  const plateNumber: string[] = msg.match(/T\d{3}[a-zA-Z]{3}/);
-  if (plateNumber.length < 1) {
+  const plateNumber = msg.match(/T\d{3}[a-zA-Z]{3}/);
+  if (!plateNumber || plateNumber.length < 1) {
     return 'please enter valid plate number example: T123AAA';
   }
 
-  console.log('C');
   return await getFines(plateNumber[0]);
 }
 
 const handleIncoming = async (ctx: Context) => {
   const body = await ctx.request.body().value;
-  const value = body.entry[0].changes[0].value;
-  console.log('A');
+  try {
+    const value = body.entry[0].changes[0].value;
 
-  const phone_number_id = value.metadata.phone_number_id;
-  const name = value.contacts[0].profile.name;
-  const from = value.messages[0].from;
-  const msg_body = value.messages[0].text.body;
-  console.log('B');
+    const phone_number_id = value.metadata.phone_number_id;
+    const name = value.contacts[0].profile.name;
+    const from = value.messages[0].from;
+    const msg_body = value.messages[0].text.body;
 
-  const msg = await getMessage(msg_body);
+    const msg = await getMessage(msg_body);
 
-  console.log(JSON.stringify(body));
+    const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=${WHATSAPP_TOKEN}`;
+    const data = {
+      messaging_product: 'whatsapp',
+      to: from,
+      text: {
+        body: `Hello, ${name}, ${msg}.`,
+      },
+    };
 
-  const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=${WHATSAPP_TOKEN}`;
-  const data = {
-    messaging_product: 'whatsapp',
-    to: from,
-    text: {
-      body: `Hello, ${name}, ${msg}.`,
-    },
-  };
+    await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.log(JSON.stringify(error));
+  }
 
-  console.log(JSON.stringify(data));
-
-  await fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: { 'Content-Type': 'application/json' },
-  });
   ctx.response.status = 200;
 }
 
