@@ -30,7 +30,6 @@ const getFines = async (plateNum: string) => {
   const values = JSON.parse(JSON.stringify(result))[1];
 
   if (values.length < 2) {
-    console.log('len len ', values);
     return values[0];
   }
 
@@ -74,6 +73,8 @@ const handleIncoming = async (ctx: Context) => {
     ctx.response.status = 200;
     return;
   }
+
+  console.log('zz ', JSON.stringify(value));
 
   const phone_number_id = value.metadata.phone_number_id;
   const name = value.contacts[0].profile.name;
