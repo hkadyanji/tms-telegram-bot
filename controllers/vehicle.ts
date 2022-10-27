@@ -30,6 +30,7 @@ const getFines = async (plateNum: string) => {
   const values = JSON.parse(JSON.stringify(result))[1];
 
   if (values.length < 2) {
+    console.log('len len ', values);
     return values[0];
   }
 
@@ -57,12 +58,13 @@ const handleWebHook = async (ctx: Context) => {
 }
 
 const getMessage = async (msg: string): Promise<string> => {
-  const plateNumber = msg.match(/T\d{3}[a-zA-Z]{3}/);
+  const plateNumber = msg.match(/[tT]\d{3}[a-zA-Z]{3}/);
   if (!plateNumber || plateNumber.length < 1) {
     return 'please enter valid plate number example: T123AAA';
   }
 
   console.log('z ', plateNumber);
+  console.log('zp ', plateNumber[0]);
   return await getFines(plateNumber[0]);
 }
 
@@ -70,6 +72,9 @@ const handleIncoming = async (ctx: Context) => {
   const body = await ctx.request.body().value;
   try {
     const value = body.entry[0].changes[0].value;
+
+    console.log('pot ', JSON.stringify(value.contacts))
+    console.log('from ', JSON.stringify(value.messages))
 
     const phone_number_id = value.metadata.phone_number_id;
     const name = value.contacts[0].profile.name;
@@ -87,21 +92,17 @@ const handleIncoming = async (ctx: Context) => {
       },
     };
 
-    try {
-      const resp = await fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' },
-      });
-      console.log('resp ', JSON.stringify(resp));
-    } catch(e) {
-      console.log('err ', e);
-    }
+    await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' },
+    }).then((v) => console.log('v ', v));
   } catch (error) {
     console.log('e2 ', error);
   }
 
   ctx.response.status = 200;
+  console.log('success');
 }
 
 const router = new Router();
