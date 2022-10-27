@@ -26,10 +26,12 @@ const getFines = async (plateNum: string) => {
       return Array.from(columns).map((column: any) => column.textContent);
     });
   });
-
-  const values = JSON.parse(JSON.stringify(result))[1];
-  console.log('zz ', values);
   await browser.close();
+  const values = JSON.parse(JSON.stringify(result))[1];
+  
+  if (values.length < 2) {
+    return values[0];
+  }
 
   return `The car ${values[3]} has a fine of Tsh. ${values[7]} and penalty of Tsh. ${values[8]} bringing the total to ${values[9]}. The offence was "${values[6]}, which took place at ${values[5]} on the date ${values[1]}"`;
 }
@@ -74,7 +76,7 @@ const handleIncoming = async (ctx: Context) => {
     },
   };
 
-  console.log(JSON.stringify(data));
+  console.log(JSON.stringify(data), msg);
 
   await fetch(url, {
     method: 'POST',
