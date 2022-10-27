@@ -63,46 +63,41 @@ const getMessage = async (msg: string): Promise<string> => {
     return 'please enter valid plate number example: T123AAA';
   }
 
-  console.log('z ', plateNumber);
-  console.log('zp ', plateNumber[0]);
   return await getFines(plateNumber[0]);
 }
 
 const handleIncoming = async (ctx: Context) => {
   const body = await ctx.request.body().value;
-  try {
-    const value = body.entry[0].changes[0].value;
+  const value = body.entry[0].changes[0].value;
 
-    console.log('pot ', JSON.stringify(value))
-    console.log('from ', JSON.stringify(body))
-
-    const phone_number_id = value.metadata.phone_number_id;
-    const name = value.contacts[0].profile.name;
-    const from = value.messages[0].from;
-    const msg_body = value.messages[0].text.body;
-
-    const msg = await getMessage(msg_body);
-
-    const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=${WHATSAPP_TOKEN}`;
-    const data = {
-      messaging_product: 'whatsapp',
-      to: from,
-      text: {
-        body: `Hello, ${name}, ${msg}.`,
-      },
-    };
-
-    await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' },
-    }).then((v) => console.log('v ', v));
-  } catch (error) {
-    console.log('e2 ', error);
+  if (!value.messages || !value.contacts) {
+    ctx.response.status = 200;
+    return;
   }
 
+  const phone_number_id = value.metadata.phone_number_id;
+  const name = value.contacts[0].profile.name;
+  const from = value.messages[0].from;
+  const msg_body = value.messages[0].text.body;
+
+  const msg = await getMessage(msg_body);
+
+  const url = `https://graph.facebook.com/v12.0/${phone_number_id}/messages?access_token=${WHATSAPP_TOKEN}`;
+  const data = {
+    messaging_product: 'whatsapp',
+    to: from,
+    text: {
+      body: `Hello, ${name}, ${msg}.`,
+    },
+  };
+
+  await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json' },
+  });
+
   ctx.response.status = 200;
-  console.log('success');
 }
 
 const router = new Router();
