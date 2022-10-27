@@ -87,16 +87,17 @@ const handleIncoming = async (ctx: Context) => {
     };
 
     try {
-      await fetch(url, {
+      const resp = await fetch(url, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json' },
       });
+      console.log('resp ', JSON.stringify(resp));
     } catch(e) {
-      console.log(JSON.stringify(e));
+      console.log('err ', JSON.stringify(e));
     }
   } catch (error) {
-    console.log(JSON.stringify(error));
+    console.log('e2 ', JSON.stringify(error));
   }
 
   ctx.response.status = 200;
