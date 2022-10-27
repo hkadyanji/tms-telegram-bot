@@ -74,6 +74,8 @@ const handleIncoming = async (ctx: Context) => {
     return;
   }
 
+  ctx.response.status = 200;
+
   const phone_number_id = value.metadata.phone_number_id;
   const name = value.contacts[0].profile.name;
   const from = value.messages[0].from;
@@ -98,7 +100,6 @@ const handleIncoming = async (ctx: Context) => {
       'Content-Type': 'application/json'
     },
   });
-  ctx.response.status = 200;
 }
 
 const router = new Router();
