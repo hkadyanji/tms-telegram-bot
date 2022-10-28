@@ -79,8 +79,6 @@ const handleIncoming = async (ctx: Context) => {
     return;
   }
 
-  console.log('dd ', JSON.stringify(value));
-
   const phone_number_id = value.metadata.phone_number_id;
   const name = value.contacts[0].profile.name;
   const from = value.messages[0].from;
