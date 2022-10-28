@@ -9,6 +9,10 @@ const WHATSAPP_TOKEN = Deno.env.get('WHATSAPP_TOKEN');
 const WHATSAPP_VERIFY_TOKEN = Deno.env.get('WHATSAPP_VERIFY_TOKEN');
 const BROWSERLESS_TOKEN = Deno.env.get('BROWSERLESS_TOKEN');
 
+const queue = new PQueue({
+  concurrency: 4,
+});
+
 const getFines = async (plateNum: string) => {
   const browser = await puppeteer.connect({
     browserWSEndpoint: `wss://chrome.browserless.io?token=${BROWSERLESS_TOKEN}`
@@ -70,14 +74,12 @@ const handleIncoming = async (ctx: Context) => {
   const body = await ctx.request.body().value;
   const value = body.entry[0].changes[0].value;
 
-  const queue = new PQueue({
-    concurrency: 1,
-  });
-
   if (!value.messages || !value.contacts) {
     ctx.response.status = 200;
     return;
   }
+
+  console.log('dd ', JSON.stringify(value));
 
   const phone_number_id = value.metadata.phone_number_id;
   const name = value.contacts[0].profile.name;
@@ -96,13 +98,15 @@ const handleIncoming = async (ctx: Context) => {
       },
     };
 
+    console.log('dd ', url);
+
     await fetch(url, {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json'
       },
-    });
+    }).then((v) => console.log('zz ', v));
   })
 
   ctx.response.status = 200;
