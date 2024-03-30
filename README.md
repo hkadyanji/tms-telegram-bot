@@ -6,6 +6,9 @@ To run it simply use the command below:
 
 `denon run --allow-net --allow-read --allow-env --allow-sys app.ts`
 
+### Access
+You can access the bot by sending a message to `@tms_tz_bot`
+
 ### External Services:
 
 1. [BrowserCloud] (https://browsercloud.io/) for browser automation for Puppeter

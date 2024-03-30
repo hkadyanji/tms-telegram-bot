@@ -3,10 +3,9 @@ import puppeteer from "https://deno.land/x/puppeteer@14.1.1/mod.ts";
 const getFines = async (plateNum: string) => {
   const BROWSER_CLOUD_KEY = Deno.env.get('BROWSER_CLOUD_KEY');
 
-  const browser = await puppeteer.launch();
-  //await puppeteer.connect({
-  //  browserWSEndpoint: `wss://chrome.browsercloud.io?token=${BROWSER_CLOUD_KEY}`
-  //});
+  const browser = await puppeteer.connect({
+    browserWSEndpoint: `wss://chrome.browsercloud.io?token=${BROWSER_CLOUD_KEY}`
+  });
 
   const page = await browser.newPage();
   await page.goto('https://tms.tpf.go.tz/');
