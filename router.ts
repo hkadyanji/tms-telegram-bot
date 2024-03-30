@@ -5,7 +5,7 @@ import vehicleRouter from './controllers/vehicle.ts';
 const router = new Router();
 router
   .use(
-    '/',
+    '/api/v1/',
     vehicleRouter.routes(),
     vehicleRouter.allowedMethods(),
   )

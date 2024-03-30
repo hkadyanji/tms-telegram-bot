@@ -3,6 +3,12 @@ import { Application } from 'https://deno.land/x/oak/mod.ts';
 
 import router from './router.ts';
 import { PORT } from './helpers/config.ts';
+import { Bot } from './helpers/telegram.ts';
+
+const token = Deno.env.get('TELEGRAM_KEY');
+
+const bot = new Bot(token);
+await bot.initialize();
 
 const app = new Application();
 
