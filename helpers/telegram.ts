@@ -12,7 +12,6 @@ export class Bot {
   async initialize() {
     this.bot.on('message', async (msg) => {
       const chatId = msg.chat.id;
-      const text = msg.text || 'I can\'t understand that.';
       const result = await getMessage(msg.text);
       await this.bot.sendMessage(chatId, result);
     });
