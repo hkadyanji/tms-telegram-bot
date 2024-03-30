@@ -1,4 +1,4 @@
-## Whatsapp and Telegram Bot for Tanzania Traffic Offense
+## Telegram Bot for Tanzania Traffic Offense
 
 A simple telegram bot to get traffic information for traffic infractions
 
