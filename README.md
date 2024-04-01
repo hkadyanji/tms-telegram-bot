@@ -24,3 +24,7 @@ You can access the bot by sending a message to `@tms_tz_bot`
 1. [Whatsapp] (https://business.whatsapp.com/developers/developer-hub)
 
 Whatsapp was used in the past, however favored telegram due to ease of deployment without stringent verification process.
+
+### Screenshot
+
+![IMG_0397](https://github.com/hkadyanji/tms-telegram-bot/assets/10661501/a07d1103-6f2d-4b34-9491-974d03f76980)
