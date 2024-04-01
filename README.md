@@ -27,4 +27,4 @@ Whatsapp was used in the past, however favored telegram due to ease of deploymen
 
 ### Screenshot
 
-<img src="[https://example.com/path/to/image.png](https://github.com/hkadyanji/tms-telegram-bot/assets/10661501/a07d1103-6f2d-4b34-9491-974d03f76980)" width="400" alt="Alt text">
+<img src="https://github.com/hkadyanji/tms-telegram-bot/assets/10661501/a07d1103-6f2d-4b34-9491-974d03f76980" width="400" alt="Alt text">
